@@ -1,4 +1,4 @@
-let PerfectNumber = require('./perfect-nums').numClassifier;
+let PerfectNumber = require('./perfect-nums');
 
 describe('Exercise - Perfect Numbers', () => {
   describe('Invalid Inputs', () => {
