@@ -1,3 +1,5 @@
+"use strict";
+
 let Robot = require('./robot').init;
 Math.seedrandom = require('seedrandom');
 
@@ -5,6 +7,10 @@ describe("Robot Name", () => {
   const NAME_REGEXP = /^[A-Z]{2}\d{3}$/;
   const DIFFERENT_ROBOT_NAME_SEED = 1234;
   const SAME_INITIAL_ROBOT_NAME_SEED = 1000;
+
+  afterEach(function() {
+    Robot.releaseNames();
+  });
 
   test("has name", () => {
     expect(new Robot().name()).toMatch(NAME_REGEXP);

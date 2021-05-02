@@ -17,6 +17,19 @@ for (let firstLetter of alpha) {
   }
 }
 
+shuffle(allPossibleNames);
+
+function getRandomIdx(min, max) {
+  return Math.floor((Math.random() * (max - min + 1)) + min);
+}
+
+function shuffle(arr) {
+  for (let idx = 0; idx < arr.length; idx += 1) {
+    const jdx = getRandomIdx(0, arr.length - 1);
+    [ arr[jdx], arr[idx] ] = [arr[idx], arr[jdx]];
+  }
+}
+
 var nameIndex = 0;
 
 var Robot = {
@@ -32,11 +45,17 @@ var Robot = {
     return this.id;
   },
   reset: function() {
-    this.id = undefined;
+    this.id = null;
   }
 };
 
+Robot.releaseNames = function() {
+  nameIndex = 0;
+}
+
 var init = Robot.init;
+
+init.releaseNames = Robot.releaseNames;
 
 Object.assign(module.exports, {
   init
