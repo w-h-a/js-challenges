@@ -1,3 +1,3 @@
 # README
 
-Work on JS Exercism Challenges
+Work on JS Exercism/Launch Challenges
