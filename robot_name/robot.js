@@ -1,29 +1,40 @@
 "use strict";
 
-var alpha = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-var nums = '0123456789';
+var alpha = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+var nums = '0123456789'.split('');
+
+var allPossibleNames = [];
+
+for (let firstLetter of alpha) {
+  for (let secondLetter of alpha) {
+    for (let firstNum of nums) {
+      for (let secondNum of nums) {
+        for (let thirdNum of nums) {
+          allPossibleNames.push(`${firstLetter}${secondLetter}${firstNum}${secondNum}${thirdNum}`);
+        }
+      }
+    }
+  }
+}
+
+var nameIndex = 0;
 
 var Robot = {
   init: function() {
     var robo = Object.create(Robot);
     return robo;
   },
-  reset: function() {
-    this.id = `${alpha[getRandomIdx(0, alpha.length - 1)]}${alpha[getRandomIdx(0, alpha.length - 1)]}${nums[getRandomIdx(0, nums.length - 1)]}${nums[getRandomIdx(0, nums.length - 1)]}${nums[getRandomIdx(0, nums.length - 1)]}`;
-  },
   name: function() {
-    if (this.hasOwnProperty("id")) {
-      return this.id;
-    } else {
-      this.reset();
-      return this.id;
+    if (!this.id) {
+      this.id = allPossibleNames[nameIndex];
+      nameIndex += 1;
     }
+    return this.id;
+  },
+  reset: function() {
+    this.id = undefined;
   }
 };
-
-function getRandomIdx(min, max) {
-  return Math.floor((Math.random() * (max - min + 1)) + min);
-}
 
 var init = Robot.init;
 
