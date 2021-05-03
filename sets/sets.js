@@ -24,15 +24,15 @@ class CustomSet {
   }
 
   isSubset(otherSet) {
-    return this.elements.every(elementIsContainedIn, otherSet);
+    return this.elements.every(elementContainedIn, otherSet);
   }
 
   isDisjoint(otherSet) {
-    return this.elements.every(elementIsNotContainedIn, otherSet) && otherSet.elements.every(elementIsNotContainedIn, this);
+    return this.elements.every(elementNotContainedIn, otherSet) && otherSet.elements.every(elementNotContainedIn, this);
   }
 
   isSame(otherSet) {
-    return this.elements.every(elementIsContainedIn, otherSet) && otherSet.elements.every(elementIsContainedIn, this);
+    return this.elements.every(elementContainedIn, otherSet) && otherSet.elements.every(elementContainedIn, this);
   }
 
   union(otherSet) {
@@ -42,21 +42,21 @@ class CustomSet {
   }
 
   intersection(otherSet) {
-    var filteredElements = this.elements.filter(elementIsContainedIn, otherSet);
+    var filteredElements = this.elements.filter(elementContainedIn, otherSet);
     return new CustomSet(filteredElements);
   }
 
   difference(otherSet) {
-    var filteredElements = this.elements.filter(elementIsNotContainedIn, otherSet);
+    var filteredElements = this.elements.filter(elementNotContainedIn, otherSet);
     return new CustomSet(filteredElements);
   }
 }
 
-function elementIsContainedIn(ele) {
+function elementContainedIn(ele) {
   return this.contains(ele);
 }
 
-function elementIsNotContainedIn(ele) {
+function elementNotContainedIn(ele) {
   return !this.contains(ele);
 }
 
