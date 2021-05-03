@@ -28,11 +28,11 @@ class CustomSet {
   }
 
   isDisjoint(otherSet) {
-    return this.elements.every(elementNotContainedIn, otherSet) && otherSet.elements.every(elementNotContainedIn, this);
+    return this.elements.every(elementNotContainedIn, otherSet);
   }
 
   isSame(otherSet) {
-    return this.elements.every(elementContainedIn, otherSet) && otherSet.elements.every(elementContainedIn, this);
+    return this.isSubset(otherSet) && otherSet.isSubset(this);
   }
 
   union(otherSet) {
