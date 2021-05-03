@@ -28,19 +28,11 @@ function Meetup(year, month) {
   function day(dayStr, desc) {
     dayStr = dayStr.toLowerCase();
     desc = desc.toLowerCase();
-
-    if (desc !== "last") {
-      return helpee(dayStr, descStrToStart[desc]);
-    }
-    var date = new Date(year, month, 1);
-    date.setDate(date.getDate() - 1);
-    while (date.getDay() !== dayStrToNum[dayStr]) {
-      date.setDate(date.getDate() - 1);
-    }
-    return new Date(year, month - 1, date.getDate())
+    if (desc !== "last") return helpee1(dayStr, descStrToStart[desc]);
+    return helpee2(dayStr);
   }
 
-  function helpee(dayStr, descNum) {
+  function helpee1(dayStr, descNum) {
     var date = new Date(year, month - 1, descNum);
     var mo = date.getMonth();
     while (date.getDay() !== dayStrToNum[dayStr]) {
@@ -48,5 +40,15 @@ function Meetup(year, month) {
       if (date.getMonth() !== mo) return null;
     }
     return new Date(year, month - 1, date.getDate());
+  }
+
+  function helpee2(dayStr) {
+    month = month === 12 ? 0 : month;
+    var date = new Date(year, month, 1);
+    date.setDate(date.getDate() - 1);
+    while (date.getDay() !== dayStrToNum[dayStr]) {
+      date.setDate(date.getDate() - 1);
+    }
+    return new Date(year, month - 1, date.getDate())
   }
 }
