@@ -16,7 +16,7 @@ function Crypto(text) {
           return getSegs().reduce(mapReducer(toTrans, strConcat), "");
 
           function getSegs() {
-            return clean.match(new RegExp(`.{1,${len || 1}}`, "g"))?.reduce(mapReducer(padStr, listCombine), []);
+            return clean.match(new RegExp(`.{1,${len || 1}}`, "g")).reduce(mapReducer(padStr, listCombine), []);
 
             function padStr(str) {
               return str.padEnd(len);
