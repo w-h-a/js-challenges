@@ -1,67 +1,96 @@
 "use strict";
 
 class CustomSet {
-  constructor(arr = []) {
-    this.elements = [];
-    this.add(...arr);
+  static setType () {
+    return Object.create (CustomSet.prototype);
   }
 
-  isEmpty() {
-    return this.elements.length === 0;
+  static Set ([ x, ...xs ]) {
+    let set = CustomSet.setType ();
+    set.elements = x === undefined ? [] : CustomSet.newMem (x, CustomSet.Set (xs)).elements;
+    return set;
   }
 
-  contains(ele) {
-    return this.elements.includes(ele);
+  static newMem (val, set) {
+    return CustomSet.member (val, set) ? set : (() => {
+      set.elements = [val, ...set.elements];
+      return set;
+    }) ();
   }
 
-  add(...eles) {
-    for (let idx = 0; idx < eles.length; idx += 1) {
-      if (!this.contains(eles[idx])) {
-        this.elements.push(eles[idx]);
-      }
-    }
-    return this;
+  static member (val, set) {
+    return set.elements.includes (val);
   }
 
-  isSubset(otherSet) {
-    return this.elements.every(elementContainedIn, otherSet);
+  static empty ({ elements }) {
+    return elements.length === 0;
   }
 
-  isDisjoint(otherSet) {
-    return this.elements.every(elementNotContainedIn, otherSet);
+  static union (xs, ys) {
+    if (!xs.elements.length && !ys.elements.length) return CustomSet.Set ([]);
+    if (!xs.elements.length) return ys;
+    if (!ys.elements.length) return xs;
+    return CustomSet.newMem (xs.elements[0], CustomSet.union (CustomSet.Set (xs.elements.slice (1)), ys));
   }
 
-  isSame(otherSet) {
-    return this.isSubset(otherSet) && otherSet.isSubset(this);
+  static intersection (xs, ys) {
+    if (!xs.elements.length || !ys.elements.length) return CustomSet.Set ([]);
+    return (
+      CustomSet.member (xs.elements[0], ys) ?
+      CustomSet.Set ([ xs.elements[0], ...CustomSet.intersection (CustomSet.Set (xs.elements.slice (1)), ys).elements ])
+      : CustomSet.Set ([ ...CustomSet.intersection (CustomSet.Set (xs.elements.slice (1)), ys).elements ])
+    );
   }
 
-  union(otherSet) {
-    var result = new CustomSet(this.elements);
-    otherSet.elements.forEach(elementAddTo, result);
-    return result;
+  static difference (xs, ys) {
+    if (!xs.elements.length || !ys.elements.length) return xs;
+    return (
+      !CustomSet.member (xs.elements[0], ys) ?
+      CustomSet.Set ([ xs.elements[0], ...CustomSet.difference (CustomSet.Set (xs.elements.slice (1)), ys).elements ])
+      : CustomSet.Set ([ ...CustomSet.difference (CustomSet.Set (xs.elements.slice (1)), ys).elements ])
+    );
   }
 
-  intersection(otherSet) {
-    var filteredElements = this.elements.filter(elementContainedIn, otherSet);
-    return new CustomSet(filteredElements);
+  static subset (xs, ys) {
+    return xs.elements.every (x => CustomSet.member (x, ys));
   }
 
-  difference(otherSet) {
-    var filteredElements = this.elements.filter(elementNotContainedIn, otherSet);
-    return new CustomSet(filteredElements);
+  static disjoint (xs, ys) {
+    return xs.elements.every (x => !CustomSet.member (x, ys));
   }
-}
 
-function elementContainedIn(ele) {
-  return this.contains(ele);
-}
+  static setEquality (xs, ys) {
+    return CustomSet.subset (xs, ys) && CustomSet.subset (ys, xs);
+  }
 
-function elementNotContainedIn(ele) {
-  return !this.contains(ele);
-}
+  static powerSet (xs) {
+    let arr = (function reverseInput (xs) {
+      return (function getPS (xs, base) {
+        return (
+          !xs.length ?
+          base
+          : [ getPS (xs.slice (1), base), getPS (xs.slice (1), [ xs[0], ...base ]) ]
+        );
+      }) (xs, []).flat (xs.length - 1);
+    }) (xs.elements.reverse ());
+    return CustomSet.Set (arr);
+  }
 
-function elementAddTo(ele) {
-  return this.add(ele);
+  static cartesianProduct (xs, ys) {
+    let arr = (function getProduct (xs, ys) {
+      if (!xs.length) return [];
+      return (function (xsProd) {
+        return (function pair (ys) {
+          return (
+            !ys.length ?
+            xsProd
+            : [ [xs[0], ys[0]], ...pair (ys.slice (1)) ]
+          );
+        }) (ys);
+      }) (getProduct (xs.slice (1), ys));
+    }) (xs.elements, ys.elements);
+    return CustomSet.Set (arr);
+  }
 }
 
 module.exports.CustomSet = CustomSet;
