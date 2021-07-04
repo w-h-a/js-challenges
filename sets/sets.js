@@ -51,12 +51,20 @@ class CustomSet {
     );
   }
 
+  //static subset (xs, ys) {
+  //  return xs.elements.every (x => CustomSet.member (x, ys));
+  //}
+
   static subset (xs, ys) {
-    return xs.elements.every (x => CustomSet.member (x, ys));
+    return xs.elements.every (x => ys.elements.some (y => x === y));
   }
 
+  //static disjoint (xs, ys) {
+  //  return xs.elements.every (x => !CustomSet.member (x, ys));
+  //}
+
   static disjoint (xs, ys) {
-    return xs.elements.every (x => !CustomSet.member (x, ys));
+    return xs.elements.every (x => ys.elements.every (y => x !== y));
   }
 
   static setEquality (xs, ys) {
