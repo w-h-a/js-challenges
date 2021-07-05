@@ -1,23 +1,68 @@
 "use strict";
 
-module.exports.primes = primes;
+class Sequence {
+  static setType () {
+    return Object.create (Sequence.prototype);
+  }
 
-function primes(integer) {
-  var arr = [];
-  arr.length = integer + 1;
-  arr.fill(true, 2);
-  for (let idx = 2; idx < Math.ceil(Math.sqrt(integer)); idx += 1) {
-    for (let jdx = idx ** 2, inc = 1; jdx < integer + 1; jdx = (idx ** 2) + (idx * inc), inc += 1) {
-      arr[jdx] = false;
+  static Nil () {
+    let nil = Sequence.setType ();
+    nil.kind = "nil";
+    return nil;
+  }
+
+  static Stream (curr, nextFunc) {
+    let stream = Sequence.setType ();
+    stream.kind = "stream";
+    stream.curr = curr;
+    stream.nextFunc = nextFunc;
+    return stream;
+  }
+
+  static iterates (func) {
+    return (ele) => {
+      return Sequence.Stream (ele, () => Sequence.iterates (func) (func (ele)));
     }
   }
-  return arr.map(toTrueIdx).filter(outFalse);
+
+  static take (sequence, n) {
+    if (sequence.kind === 'nil') throw new Error ('nil sequence');
+    return (
+      sequence.curr <= n ?
+      [ sequence.curr, ...Sequence.take (sequence.nextFunc (), n) ]
+      : []
+    );
+  }
+
+  static filter (condition) {
+    return (sequence) => {
+      if (sequence.kind === 'nil') return sequence;
+      return (
+        condition (sequence.curr) ?
+        Sequence.Stream (sequence.curr, () => Sequence.filter (condition) (sequence.nextFunc ()))
+        : Sequence.filter (condition) (sequence.nextFunc ())
+      );
+    }
+  }
 }
 
-function toTrueIdx(ele, idx) {
-  return ele ? idx : ele;
+// application of Sequence
+
+function sift (p) {
+  return Sequence.filter (n => n % p !== 0);
 }
 
-function outFalse(ele) {
-  return ele;
+function sieve (sequence) {
+  return Sequence.Stream (
+    sequence.curr,
+    () => sieve (sift (sequence.curr) (sequence.nextFunc ()))
+  );
 }
+
+var it = sieve (Sequence.iterates ((ele) => ele + 1) (2));
+
+function primes (n) {
+  return Sequence.take (it, n);
+}
+
+module.exports.primes = primes;

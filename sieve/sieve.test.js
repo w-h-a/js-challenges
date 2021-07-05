@@ -1,4 +1,4 @@
-var primes = require('./sieve').primes;
+var { primes } = require('./sieve');
 
 describe('Sieve', () => {
   test('no primes under two', () => {
