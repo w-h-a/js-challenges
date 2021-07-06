@@ -5,16 +5,23 @@ Object.assign(module.exports, {
   discard
 });
 
-function keep(arr, callback) {
-  return arr.filter(callback)
+function keep (list, condition) {
+  if (!list.length) return [];
+  return (
+    condition (list[0]) ?
+    [ list[0], ...keep (list.slice (1), condition) ]
+    : keep (list.slice (1), condition)
+  );
 }
 
-function discard(arr, callback) {
-  var result = [];
-  for (let idx = 0; idx < arr.length; idx += 1) {
-    if (!callback(arr[idx])) {
-      result.push(arr[idx]);
-    }
+function discard (list, condition) {
+  return keep (list, not (condition));
+}
+
+function not(condition) {
+  return negated;
+
+  function negated(...args) {
+    return !condition(...args);
   }
-  return result;
 }
