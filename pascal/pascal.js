@@ -1,20 +1,13 @@
 "use strict";
 
-module.exports.rows = rows;
-
-function rows(num) {
-  if (num === 0) return [];
-  var result = [[1]];
-  for (let idx = 1; idx < num; idx += 1) {
-    let row = [];
-    for (let jdx = 0; jdx < idx + 1; jdx += 1) {
-      if (jdx === 0 || jdx === idx) {
-        row.push(1);
-      } else {
-        row.push(result[idx - 1][jdx - 1] + result[idx - 1][jdx]);
-      }
+const rows = num => {
+  return (function keepGoing (count) {
+    return num => {
+      if (count === num) return [];
+      const getRow = count => prev => k => count === 0 ? [] : [ prev, ...getRow (count - 1) (prev * ((count - 1) / (k + 1))) (k + 1) ];
+      return [ [1, ...getRow (count) (1 * (count / 1)) (1)], ...keepGoing (count + 1) (num) ];
     }
-    result.push(row);
-  }
-  return result;
-}
+  }) (0) (num);
+};
+
+module.exports.rows = rows;

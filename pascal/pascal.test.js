@@ -1,6 +1,6 @@
 "use strict";
 
-var rows = require('./pascal').rows;
+const { rows } = require ('./pascal');
 
 describe('Pascals Triangle', () => {
   describe("Given a count, return a collection of that many rows of pascal's triangle", () => {
